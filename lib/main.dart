@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:formulario_cadastro/pages/formulario_page.dart';
+import 'package:formulario_cadastro/pages/home_page.dart';
 
 void main() => runApp(MeuApp());
 
@@ -12,7 +13,7 @@ class MeuApp extends StatelessWidget {
         primaryColor: Colors.red,
         accentColor: Colors.red,
       ),
-      home: FormularioPage(),
+      home: HomePage(),
     );
   }
 }

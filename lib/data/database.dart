@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 
 class DataBase {
   Database _db;
-  final int _versao = 1;
+  final int _versao = 2;
   final String _nomeDB = 'user.db';
 
   static DataBase _instancia = DataBase._interno();
@@ -25,29 +25,22 @@ class DataBase {
     await db.execute('''
       create table users (
       id integer primary key autoincrement,
-      nome text not null,
+      name text not null,
       email text not null,
-      cpf text not null,
-      public_place text not null,
-      neighborhood text not null,
-      uf text not null,
-      country text not null,
-      city text not null,
-      zip_cod text not null,
-      number integer not null
-     );
+      cpf text not null
+      );
     ''');
 
     await db.execute('''
       create table user_addresses (
       id integer primary key autoincrement,
-      user_id integer not null
+      user_id integer not null,
       public_place text not null,
       neighborhood text not null,
       uf text not null,
       country text not null,
       city text not null,
-      zip_cod text not null,
+      zip_code text not null,
       number integer not null
      );
     ''');

@@ -1,4 +1,6 @@
 class Endereco {
+  int id;
+  int userId;
   String zipCode;
   String publicPlace;
   int number;
@@ -8,6 +10,8 @@ class Endereco {
   String country;
 
   Endereco({
+    this.id,
+    this.userId,
     this.zipCode,
     this.publicPlace,
     this.number,
@@ -18,13 +22,15 @@ class Endereco {
   });
 
   Endereco.fromMap(Map<String, dynamic> map) {
-    publicPlace = map['logradouro'];
-    neighborhood = map['bairro'];
-    city = map['localidade'];
+    id = map['id'];
+    userId = int.tryParse(map['user_id']);
+    publicPlace = map['public_place'];
+    neighborhood = map['neighborhood'];
+    city = map['city'];
     uf = map['uf'];
     country = 'Brasil';
-    number = map['numero'];
-    // zipCode = map['cep'];
+    number = map['number'];
+    zipCode = map['zip_code'];
   }
 
   Map<String, dynamic> toMap() {

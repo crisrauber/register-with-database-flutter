@@ -4,9 +4,11 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formulario_cadastro/repositories/user_repository.dart';
+import '../entidades/endereco.dart';
+import '../entidades/endereco.dart';
 import '../entidades/usuario.dart';
 import '../services/cep_service.dart';
-import '../entidades/usuario.dart';
+
 
 class FormularioPage extends StatefulWidget {
   @override
@@ -18,6 +20,9 @@ class _FormularioPageState extends State<FormularioPage> {
   final _formKey = GlobalKey<FormState>();
 
   Usuario _usuario = Usuario();
+  Endereco _endereco = Endereco();
+  UserRepository _userRepository = UserRepository();
+  
   final _nomeController = TextEditingController();
   final _emailController = TextEditingController();
   final _cpfController = TextEditingController();
@@ -29,8 +34,7 @@ class _FormularioPageState extends State<FormularioPage> {
   final _ufController = TextEditingController();
   final _paisController = TextEditingController();
 
-  UserRepository _userRepository;
-
+  
   @override
   void initState() {
     super.initState();
@@ -182,7 +186,7 @@ class _FormularioPageState extends State<FormularioPage> {
                               controller: _cepController,
                               label: 'CEP',
                               onSaved: (valor) =>
-                                  _usuario.endereco.zipCode = valor,
+                                  _endereco.zipCode = valor,
                               validator: (valor) {
                                 if (valor.length != 8) return 'CEP Inválido';
                                 return null;
@@ -222,7 +226,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                 return null;
                               },
                               onSaved: (valor) =>
-                                  _usuario.endereco.publicPlace = valor,
+                                  _endereco.publicPlace = valor,
                             ),
                           ),
                           SizedBox(width: 10),
@@ -236,7 +240,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                 return null;
                               },
                               onSaved: (valor) {
-                                _usuario.endereco.number = int.tryParse(valor);
+                                _endereco.number = int.tryParse(valor);
                               },
                               formatters: [
                                 WhitelistingTextInputFormatter.digitsOnly
@@ -260,7 +264,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                 return null;
                               },
                               onSaved: (value) =>
-                                  _usuario.endereco.neighborhood = value,
+                                  _endereco.neighborhood = value,
                             ),
                           ),
                           SizedBox(width: 15),
@@ -269,7 +273,7 @@ class _FormularioPageState extends State<FormularioPage> {
                               controller: _cidadeController,
                               label: 'Cidade',
                               onSaved: (value) =>
-                                  _usuario.endereco.city = value,
+                                  _endereco.city = value,
                               validator: (value) {
                                 if (value.length < 3 || value.length > 30) {
                                   return 'Cidade inválida';
@@ -291,7 +295,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                 if (valor.length != 2) return 'UF inválido';
                                 return null;
                               },
-                              onSaved: (value) => _usuario.endereco.uf = value,
+                              onSaved: (value) => _endereco.uf = value,
                             ),
                           ),
                           SizedBox(width: 15),
@@ -305,7 +309,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                 return null;
                               },
                               onSaved: (valor) =>
-                                  _usuario.endereco.country = valor,
+                                  _endereco.country = valor,
                             ),
                           ),
                         ],
@@ -355,7 +359,6 @@ class _FormularioPageState extends State<FormularioPage> {
 
   void registerUser() async {
     await _userRepository.newUser(_usuario);
-    setState(() {});
   }
 
   void updateUser() async {
