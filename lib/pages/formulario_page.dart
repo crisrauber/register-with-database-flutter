@@ -9,9 +9,8 @@ import '../entidades/endereco.dart';
 import '../entidades/usuario.dart';
 import '../services/cep_service.dart';
 
-
 class FormularioPage extends StatefulWidget {
-   static String routeName = '/formulario';
+  static String routeName = '/formulario';
   @override
   _FormularioPageState createState() => _FormularioPageState();
 }
@@ -21,10 +20,12 @@ class _FormularioPageState extends State<FormularioPage> {
   final _formKey = GlobalKey<FormState>();
 
   Usuario _usuario = Usuario();
-  Endereco _endereco = Endereco();
+  Endereco _enderecoUsuario = Endereco();
+  Usuario _userEdit;
+  List<Endereco> _userAddress = [];
   UserRepository _userRepository = UserRepository();
-  AdressRepository _adressRepository = AdressRepository();
-  
+  AdressRepository _addressRepository = AdressRepository();
+
   final _nomeController = TextEditingController();
   final _emailController = TextEditingController();
   final _cpfController = TextEditingController();
@@ -36,10 +37,34 @@ class _FormularioPageState extends State<FormularioPage> {
   final _ufController = TextEditingController();
   final _paisController = TextEditingController();
 
-  
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('acessou didchange');
+    _userEdit = ModalRoute.of(context).settings.arguments;
+    if (_userEdit != null) {
+      editUser();
+    }
+  }
+
+  Future<void> editUser() async {
+    _nomeController.text = _userEdit.name;
+    _emailController.text = _userEdit.email;
+    _cpfController.text = _userEdit.cpf;
+    await getAddressBy('user_id', _userEdit.id);
+
+    _cepController.text = _userAddress[0].zipCode;
+    _ruaController.text = _userAddress[0].publicPlace;
+    _numeroController.text = _userAddress[0].number.toString();
+    _bairroController.text = _userAddress[0].neighborhood;
+    _cidadeController.text = _userAddress[0].city;
+    _ufController.text = _userAddress[0].uf;
+    _paisController.text = _userAddress[0].country;
   }
 
   @override
@@ -110,7 +135,7 @@ class _FormularioPageState extends State<FormularioPage> {
     } catch (e) {
       _mostrarSnackBar('CEP não encontrado!!');
     } finally {
-      Navigator.of(context).pop();
+      // Navigator.of(context).pop();
     }
   }
 
@@ -121,9 +146,16 @@ class _FormularioPageState extends State<FormularioPage> {
     }
     _formKey.currentState.save();
     _mostrarSnackBar('Dados válidos');
-    print(_usuario.name);
-    registerUser();
-    //registerAdress();
+
+    if (_userEdit != null) {
+      _usuario.id = _userEdit.id;
+      _enderecoUsuario.id = _userAddress[0].id;
+      updateUser();
+      updateAddress();
+    } else {
+      registerUser();
+      registerAddress();
+    }
   }
 
   @override
@@ -189,7 +221,7 @@ class _FormularioPageState extends State<FormularioPage> {
                               controller: _cepController,
                               label: 'CEP',
                               onSaved: (valor) =>
-                                  _endereco.zipCode = valor,
+                                  _enderecoUsuario.zipCode = valor,
                               validator: (valor) {
                                 if (valor.length != 8) return 'CEP Inválido';
                                 return null;
@@ -229,7 +261,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                 return null;
                               },
                               onSaved: (valor) =>
-                                  _endereco.publicPlace = valor,
+                                  _enderecoUsuario.publicPlace = valor,
                             ),
                           ),
                           SizedBox(width: 10),
@@ -243,7 +275,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                 return null;
                               },
                               onSaved: (valor) {
-                                _endereco.number = int.tryParse(valor);
+                                _enderecoUsuario.number = int.tryParse(valor);
                               },
                               formatters: [
                                 WhitelistingTextInputFormatter.digitsOnly
@@ -267,7 +299,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                 return null;
                               },
                               onSaved: (value) =>
-                                  _endereco.neighborhood = value,
+                                  _enderecoUsuario.neighborhood = value,
                             ),
                           ),
                           SizedBox(width: 15),
@@ -275,8 +307,7 @@ class _FormularioPageState extends State<FormularioPage> {
                             child: buildTextFormField(
                               controller: _cidadeController,
                               label: 'Cidade',
-                              onSaved: (value) =>
-                                  _endereco.city = value,
+                              onSaved: (value) => _enderecoUsuario.city = value,
                               validator: (value) {
                                 if (value.length < 3 || value.length > 30) {
                                   return 'Cidade inválida';
@@ -298,7 +329,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                 if (valor.length != 2) return 'UF inválido';
                                 return null;
                               },
-                              onSaved: (value) => _endereco.uf = value,
+                              onSaved: (value) => _enderecoUsuario.uf = value,
                             ),
                           ),
                           SizedBox(width: 15),
@@ -312,7 +343,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                 return null;
                               },
                               onSaved: (valor) =>
-                                  _endereco.country = valor,
+                                  _enderecoUsuario.country = valor,
                             ),
                           ),
                         ],
@@ -368,8 +399,16 @@ class _FormularioPageState extends State<FormularioPage> {
     await _userRepository.updateUser(_usuario);
   }
 
- void registerAdress() async {
-  await _adressRepository.newAdress(_endereco);
-  setState((){});
- }
+  void updateAddress() async {
+    await _addressRepository.updateAddress(_enderecoUsuario);
+  }
+
+  void registerAddress() async {
+    await _addressRepository.newAdress(_enderecoUsuario);
+    setState(() {});
+  }
+
+  Future<void> getAddressBy(String column, int value) async {
+    _userAddress = await _addressRepository.getBy(column: column, value: value);
+  }
 }

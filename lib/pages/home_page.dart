@@ -11,90 +11,96 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
-UserRepository _userRepository = UserRepository();
-AdressRepository _adressRepository = AdressRepository();
+  UserRepository _userRepository = UserRepository();
+  AdressRepository _adressRepository = AdressRepository();
 
-List<Usuario> _allusers = [];
-List<Endereco> _alladress = [];
+  List<Usuario> _allusers = [];
+  List<Endereco> _alladress = [];
 
-Usuario  _usuario; 
-Endereco _endereco;
+  Usuario _usuario;
+  Endereco _endereco;
 
+  void registerUser() async {
+    await _userRepository.newUser(_usuario);
+  }
 
-void registerUser() async {
-  await _userRepository.newUser(_usuario);
-}
+  void getUser(_userById) async {
+    _allusers = await _userRepository.getUser(_userById);
+  }
 
-void getUser(_userById) async {
-  _allusers = await _userRepository.getUser(_userById);
-}
+  void getUserBy(String column, String value) async {
+    _allusers = await _userRepository.getBy(column, value);
+  }
 
-void getUserBy(String column, String value) async {
-  _allusers = await _userRepository.getBy(column,value);
-}
+  void setListUsers() async {
+    _allusers =
+        await _userRepository.allUsers().whenComplete(() => setState(() {}));
+  }
 
+  void getAdress(_adressById) async {
+    _allusers = await _userRepository.getUser(_adressById);
+  }
 
- void setListUsers() async {
-  _allusers = await _userRepository.allUsers().whenComplete(() => setState((){}));
-}
+  void setListAdress() async {
+    _alladress = await _adressRepository.allAdress();
+    setState(() {});
+  }
 
+  void registerAdress() async {
+    await _adressRepository.newAdress(_endereco);
+    setState(() {});
+  }
 
-void getAdress(_adressById) async {
-  _allusers = await _userRepository.getUser(_adressById);
-}
+  void clearDb() async {
+    await _userRepository.delAll();
+    await _adressRepository.delAll();
+    setListUsers();
+    setListAdress();
+    setState(() {});
+  }
 
- 
-void setListAdress() async {
-  _alladress = await _adressRepository.allAdress();
-  setState((){});
-      
-}
+  void add() {
+    _usuario = Usuario(name: 'M2', email: 'wwww', cpf: 'eeeeee');
+    _endereco = Endereco(
+        zipCode: '1',
+        publicPlace: 'ddddd',
+        number: 33333,
+        neighborhood: 'sdqdd',
+        city: 'acde',
+        uf: 'cdwev',
+        country: 'dcwwcw');
+    registerUser();
+    registerAdress();
+    _usuario = Usuario(name: 'M3', email: 'wwww', cpf: 'eeeeee');
+    _endereco = Endereco(
+        zipCode: '4',
+        publicPlace: 'ddddd',
+        number: 33333,
+        neighborhood: 'sdqdd',
+        city: 'acde',
+        uf: 'cdwev',
+        country: 'dcwwcw');
+    registerUser();
+    registerAdress();
+    setListUsers();
+    setListAdress();
+  }
 
-void registerAdress() async {
-  await _adressRepository.newAdress(_endereco);
-  setState((){});
-}
+  void show() {
+    setState(() {});
+    setListUsers();
+    setListAdress();
+    print('usuario: ${_allusers.length}');
+    print('endereços: ${_alladress.length}');
+    print(_allusers[0].id);
+    print(_alladress[0].neighborhood);
 
-void clearDb() async {
-  await _userRepository.delAll();
-  await _adressRepository.delAll();
-  setListUsers();
-  setListAdress(); 
-  setState((){});
-}
+    _allusers.forEach((element) {
+      print(element.id);
+    });
+  }
 
-
-void add(){
- _usuario = Usuario(name:'M2',email:'wwww',cpf:'eeeeee'); 
- _endereco = Endereco(zipCode : '1',publicPlace: 'ddddd',number: 33333,neighborhood: 'sdqdd',city: 'acde',uf: 'cdwev',country: 'dcwwcw');
- registerUser();
- registerAdress();
- _usuario = Usuario(name:'M3',email:'wwww',cpf:'eeeeee'); 
- _endereco = Endereco(zipCode : '4',publicPlace: 'ddddd',number: 33333,neighborhood: 'sdqdd',city: 'acde',uf: 'cdwev',country: 'dcwwcw');
-registerUser();
-registerAdress();
-setListUsers();
-setListAdress(); 
- }
-
-void show(){
-setState((){});
-setListUsers();
-setListAdress(); 
-print('usuario: ${_allusers.length}'); 
-print('endereços: ${_alladress.length}');
-
-_allusers.forEach((element) {
-  print(element.id);
-  
-
-});
-
-}
-
-Widget build(BuildContext context) {
-                     
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Flutter'),
@@ -107,13 +113,22 @@ Widget build(BuildContext context) {
             Column(
               children: <Widget>[
                 Container(
-                   child: RaisedButton(onPressed:() => clearDb(),child: Text('Limpar'),),
+                  child: RaisedButton(
+                    onPressed: () => clearDb(),
+                    child: Text('Limpar'),
+                  ),
                 ),
                 Container(
-                   child: RaisedButton(onPressed:() => add(),child: Text('cadastrar'),),
+                  child: RaisedButton(
+                    onPressed: () => add(),
+                    child: Text('cadastrar'),
+                  ),
                 ),
                 Container(
-                   child: RaisedButton(onPressed:() => show(),child: Text('Mostra'),),
+                  child: RaisedButton(
+                    onPressed: () => show(),
+                    child: Text('Mostra'),
+                  ),
                 ),
               ],
             ),

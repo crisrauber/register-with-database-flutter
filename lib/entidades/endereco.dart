@@ -23,7 +23,7 @@ class Endereco {
 
   Endereco.fromMap(Map<String, dynamic> map) {
     id = map['id'];
-    userId = int.tryParse(map['user_id']);
+    // userId = map['user_id'];
     publicPlace = map['public_place'];
     neighborhood = map['neighborhood'];
     city = map['city'];
@@ -33,9 +33,17 @@ class Endereco {
     zipCode = map['zip_code'];
   }
 
+  Endereco.fromCep(Map<String, dynamic> map) {
+    publicPlace = map['logradouro'];
+    neighborhood = map['bairro'];
+    city = map['localidade'];
+    uf = map['uf'];
+    country = 'Brasil';
+  }
+
   Map<String, dynamic> toMap() {
     return {
-      'pulic_place': publicPlace,
+      'public_place': publicPlace,
       'neighborhood': neighborhood,
       'city': city,
       'uf': uf,
