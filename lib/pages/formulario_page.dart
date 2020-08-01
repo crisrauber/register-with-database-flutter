@@ -3,14 +3,15 @@ import 'package:cnpj_cpf_helper/cnpj_cpf_helper.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:formulario_cadastro/repositories/address_repository.dart';
 import 'package:formulario_cadastro/repositories/user_repository.dart';
-import '../entidades/endereco.dart';
 import '../entidades/endereco.dart';
 import '../entidades/usuario.dart';
 import '../services/cep_service.dart';
 
 
 class FormularioPage extends StatefulWidget {
+   static String routeName = '/formulario';
   @override
   _FormularioPageState createState() => _FormularioPageState();
 }
@@ -22,6 +23,7 @@ class _FormularioPageState extends State<FormularioPage> {
   Usuario _usuario = Usuario();
   Endereco _endereco = Endereco();
   UserRepository _userRepository = UserRepository();
+  AdressRepository _adressRepository = AdressRepository();
   
   final _nomeController = TextEditingController();
   final _emailController = TextEditingController();
@@ -117,10 +119,11 @@ class _FormularioPageState extends State<FormularioPage> {
       _mostrarSnackBar('Informações inválidas');
       return;
     }
-
     _formKey.currentState.save();
     _mostrarSnackBar('Dados válidos');
+    print(_usuario.name);
     registerUser();
+    //registerAdress();
   }
 
   @override
@@ -364,4 +367,9 @@ class _FormularioPageState extends State<FormularioPage> {
   void updateUser() async {
     await _userRepository.updateUser(_usuario);
   }
+
+ void registerAdress() async {
+  await _adressRepository.newAdress(_endereco);
+  setState((){});
+ }
 }

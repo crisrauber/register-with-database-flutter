@@ -5,6 +5,7 @@ import '../repositories/user_repository.dart';
 import '../repositories/address_repository.dart';
 
 class HomePage extends StatefulWidget {
+  static String routeName = '/control';
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -45,12 +46,14 @@ void getAdress(_adressById) async {
 
  
 void setListAdress() async {
-  _alladress = await _adressRepository.allAdress().whenComplete(() => setState((){}));
+  _alladress = await _adressRepository.allAdress();
+  setState((){});
       
 }
 
 void registerAdress() async {
   await _adressRepository.newAdress(_endereco);
+  setState((){});
 }
 
 void clearDb() async {
@@ -77,13 +80,14 @@ setListAdress();
 
 void show(){
 setState((){});
-
+setListUsers();
+setListAdress(); 
 print('usuario: ${_allusers.length}'); 
 print('endereços: ${_alladress.length}');
 
 _allusers.forEach((element) {
   print(element.id);
-  //getUserBy('id',element.id.toString());
+  
 
 });
 

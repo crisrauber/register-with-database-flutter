@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:formulario_cadastro/pages/formulario_page.dart';
-import 'package:formulario_cadastro/pages/home_page.dart';
+import 'pages/formulario_page.dart';
+import 'pages/lista_page.dart';
+import 'pages/home_page.dart';
 
-void main() => runApp(MeuApp());
+void main() {
+  runApp(MyApp());
+}
 
-class MeuApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.red,
-        accentColor: Colors.red,
-      ),
-      home: HomePage(),
+      title: 'Home page',
+      initialRoute: Lista.routeName,
+     
+      routes: {
+        FormularioPage.routeName: (context) {
+          return FormularioPage();
+        },
+        Lista.routeName: (context) {
+          return Lista();
+        },
+        HomePage.routeName: (context) {
+          return HomePage();
+        },
+      },
     );
   }
 }
