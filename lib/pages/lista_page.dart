@@ -27,7 +27,8 @@ class _ListaState extends State<Lista> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                //color: Theme.of(context).primaryColor,
+                 color: Colors.red,
               ),
               child: Text(
                 'Menu da Aplicação',
@@ -64,6 +65,7 @@ class _ListaState extends State<Lista> {
       appBar: AppBar(
         title:
             Text('Lista  de usuários', style: TextStyle(color: Colors.white)),
+             backgroundColor: Colors.red,
       ),
       body: Center(
         child: ListView.builder(

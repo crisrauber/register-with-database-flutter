@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formulario_cadastro/repositories/address_repository.dart';
 import 'package:formulario_cadastro/repositories/user_repository.dart';
+import 'package:formulario_cadastro/utils/app_routes.dart';
 import '../entidades/endereco.dart';
 import '../entidades/usuario.dart';
 import '../services/cep_service.dart';
@@ -152,9 +153,11 @@ class _FormularioPageState extends State<FormularioPage> {
       _enderecoUsuario.id = _userAddress[0].id;
       updateUser();
       updateAddress();
+      Navigator.of(context).pushNamed(AppRoutes.USER_LIST);
     } else {
       registerUser();
       registerAddress();
+      Navigator.of(context).pushNamed(AppRoutes.USER_LIST);
     }
   }
 
