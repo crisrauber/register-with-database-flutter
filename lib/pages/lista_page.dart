@@ -28,7 +28,7 @@ class _ListaState extends State<Lista> {
             DrawerHeader(
               decoration: BoxDecoration(
                 //color: Theme.of(context).primaryColor,
-                 color: Colors.red,
+                color: Colors.red,
               ),
               child: Text(
                 'Menu da Aplicação',
@@ -41,14 +41,16 @@ class _ListaState extends State<Lista> {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).pushNamed(AppRoutes.USER_LIST);
+                setListUsers();
               },
             ),
             ListTile(
               leading: Icon(Icons.add),
               title: Text('Cadastro de Usuários'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
-                Navigator.of(context).pushNamed(AppRoutes.REGISTER_USER);
+                await Navigator.of(context).pushNamed(AppRoutes.REGISTER_USER);
+                setListUsers();
               },
             ),
             ListTile(
@@ -65,7 +67,7 @@ class _ListaState extends State<Lista> {
       appBar: AppBar(
         title:
             Text('Lista  de usuários', style: TextStyle(color: Colors.white)),
-             backgroundColor: Colors.red,
+        backgroundColor: Colors.red,
       ),
       body: Center(
         child: ListView.builder(
@@ -78,9 +80,13 @@ class _ListaState extends State<Lista> {
               ),
               title: Text('${_allusers[index].name}, ${_allusers[index].cpf}'),
               subtitle: Text(_allusers[index].email),
-              onTap: () {
-                Navigator.of(context).pushNamed(AppRoutes.REGISTER_USER,
+              onTap: () async {
+                await Navigator.of(context).pushNamed(AppRoutes.REGISTER_USER,
                     arguments: _allusers[index]);
+                setListUsers();
+              },
+              onLongPress: () {
+                _alertDialog(_allusers[index]);
               },
             );
           },
@@ -89,8 +95,47 @@ class _ListaState extends State<Lista> {
     );
   }
 
-  void setListUsers() async {
-    _allusers =
-        await _userRepository.allUsers().whenComplete(() => setState(() {}));
+  void _alertDialog(Usuario user) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(
+            'Excluir usuario ?',
+          ),
+          content: Text(
+            'Deseja Excluir o usuario: ${user.name}',
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Não'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                setListUsers();
+              },
+            ),
+            FlatButton(
+              child: Text('Sim'),
+              onPressed: () {
+                deleteUser(user);
+                Navigator.of(context).pop();
+                setListUsers();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void setListUsers() {
+    _userRepository.allUsers().then((value) => setState(() {
+          _allusers = value;
+        }));
+  }
+
+  Future<void> deleteUser(Usuario user) async {
+    await _userRepository.delUser(user);
   }
 }

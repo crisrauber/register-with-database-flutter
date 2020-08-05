@@ -136,7 +136,7 @@ class _FormularioPageState extends State<FormularioPage> {
     } catch (e) {
       _mostrarSnackBar('CEP não encontrado!!');
     } finally {
-      // Navigator.of(context).pop();
+      Navigator.of(context).pop();
     }
   }
 
@@ -153,11 +153,11 @@ class _FormularioPageState extends State<FormularioPage> {
       _enderecoUsuario.id = _userAddress[0].id;
       updateUser();
       updateAddress();
-      Navigator.of(context).pushNamed(AppRoutes.USER_LIST);
+      Navigator.of(context).pop();
     } else {
       registerUser();
       registerAddress();
-      Navigator.of(context).pushNamed(AppRoutes.USER_LIST);
+      Navigator.of(context).pop();
     }
   }
 
